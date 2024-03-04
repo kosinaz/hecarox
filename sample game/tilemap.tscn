@@ -1,7 +1,25 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://tilemap.tres" type="TileSet" id=1]
 [ext_resource path="res://tilemap.gd" type="Script" id=2]
+[ext_resource path="res://char1.png" type="Texture" id=3]
+[ext_resource path="res://char2.png" type="Texture" id=4]
+[ext_resource path="res://char4.png" type="Texture" id=5]
+[ext_resource path="res://char3.png" type="Texture" id=6]
+[ext_resource path="res://char5.png" type="Texture" id=7]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 4 ), ExtResource( 6 ), ExtResource( 5 ), ExtResource( 7 ) ],
+"loop": true,
+"name": "down",
+"speed": 5.0
+} ]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource( 2 )
@@ -21,3 +39,8 @@ tile_data = PoolIntArray( -917498, 34, 0, -851955, 73, 0, -851953, 73, 0, -78642
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
 current = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 232, 88 )
+frames = SubResource( 1 )
+animation = "down"
