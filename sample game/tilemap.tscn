@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://tilemap.tres" type="TileSet" id=1]
 [ext_resource path="res://tilemap.gd" type="Script" id=2]
@@ -22,7 +22,6 @@
 [ext_resource path="res://char_walk_right_frame_1.png" type="Texture" id=20]
 [ext_resource path="res://char_walk_right_frame_3.png" type="Texture" id=21]
 [ext_resource path="res://char_walk_up_frame_0.png" type="Texture" id=22]
-[ext_resource path="res://char.gd" type="Script" id=23]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -78,7 +77,6 @@ tile_data = PoolIntArray( -2490391, 22, 8, -2490390, 22, 10, -2490389, 22, 10, -
 
 [node name="Char" type="Node2D" parent="."]
 position = Vector2( 232, 136 )
-script = ExtResource( 23 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="Char"]
 position = Vector2( 0, -4 )
