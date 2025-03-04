@@ -2,9 +2,9 @@ extends Node2D
 
 var fov = Fov.new()
 var _tween = null
-var floors = [0, 3, 11]
-var foundations = [1, 4, 7]
-var walls = [2, 5, 8, 14]
+var floors = [0, 3, 11, 12]
+var foundations = [1, 4, 7, 13, 16, 19, 22, 25, 28, 31, 34]
+var walls = [2, 5, 8, 14, 17, 20, 23, 26, 29, 32, 35]
 var doors = [8, 14]
 var wall_cells = []
 var map_position = Vector2()
@@ -56,6 +56,9 @@ func _process(_delta):
 					var enemy_map_position = tilemap.world_to_map(enemy.position)
 					if -1 < enemy_map_position.x and enemy_map_position.x < 5:
 						if  -20 < enemy_map_position.y and enemy_map_position.y < -14:
+							if enemy.name.begins_with("Golem"):
+								tilemap.set_cell(-1, -21, 12)
+								wall_cells.erase(Vector2(-1, -21))
 							enemy.queue_free()
 				for enemy in get_tree().get_nodes_in_group("corpses"):
 					var enemy_map_position = tilemap.world_to_map(enemy.position)
