@@ -2,10 +2,11 @@ extends Node2D
 
 var fov = Fov.new()
 var _tween = null
-var floors = [0, 3, 11, 12]
-var foundations = [1, 4, 7, 13, 16, 19, 22, 25, 28, 31, 34]
-var walls = [2, 5, 8, 14, 17, 20, 23, 26, 29, 32, 35]
-var doors = [8, 14]
+var floors = [0, 3, 11, 12, 41]
+var gaps = [6, 9, 15]
+var foundations = [1, 4, 7, 13, 16, 19, 22, 25, 28, 31, 34, 43, 46]
+var walls = [2, 5, 8, 14, 17, 20, 23, 26, 29, 32, 35, 38, 44, 47, 50]
+var doors = [8, 14, 38]
 var wall_cells = []
 var map_position = Vector2()
 var current_fov = []
@@ -43,7 +44,10 @@ func _process(_delta):
 			animation = "walk"
 	if Input.is_key_pressed(KEY_UP):
 		if doors.has(tilemap.get_cell(map_position.x, map_position.y - 1)):
-			tilemap.set_cell(map_position.x, map_position.y - 1, 11)
+			if tilemap.get_cell(map_position.x, map_position.y - 1) == 38:
+				tilemap.set_cell(map_position.x, map_position.y - 1, 41)
+			else:
+				tilemap.set_cell(map_position.x, map_position.y - 1, 11)
 			wall_cells.erase(Vector2(map_position.x, map_position.y - 1))
 		if map_position == Vector2(2, -20):
 			if tilemap.get_cell(2, -21) == 17:
@@ -86,7 +90,7 @@ func _process(_delta):
 		return
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		if map_position == tilemap.world_to_map(enemy.position):
-			if enemy.name.begins_with("Imp"):
+			if enemy.name.begins_with("Imp") or enemy.name.begins_with("Gargoyle"):
 				enemy.get_node("AnimatedSprite").play("die")
 				enemy.remove_from_group("enemies")
 				enemy.add_to_group("corpses")
@@ -99,7 +103,7 @@ func _process(_delta):
 	time += 1
 	_tween = get_tree().create_tween()
 	_tween.set_parallel()
-	_tween.tween_property(hero, "position", map_position * 16 + Vector2(8, 8), 0.25)
+	_tween.tween_property(hero, "position", map_position * 16 + Vector2(8, 8), 0.4)
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		if enemy.name.begins_with("Golem") and time % 2:
 			continue
@@ -109,17 +113,27 @@ func _process(_delta):
 				if floors.has(tilemap.get_cell(enemy_map_position.x + 1, enemy_map_position.y)):
 					enemy_map_position.x += 1
 					enemy.get_node("AnimatedSprite").flip_h = false
+				elif enemy.name.begins_with("Gargoyle") and gaps.has(tilemap.get_cell(enemy_map_position.x + 1, enemy_map_position.y)):
+					enemy_map_position.x += 1
+					enemy.get_node("AnimatedSprite").flip_h = false
 			if enemy_map_position.x > map_position.x:
 				if floors.has(tilemap.get_cell(enemy_map_position.x - 1, enemy_map_position.y)):
 					enemy_map_position.x -= 1
 					enemy.get_node("AnimatedSprite").flip_h = true
+				elif enemy.name.begins_with("Gargoyle") and gaps.has(tilemap.get_cell(enemy_map_position.x - 1, enemy_map_position.y)):
+					enemy_map_position.x += 1
+					enemy.get_node("AnimatedSprite").flip_h = true
 			if enemy_map_position.y < map_position.y:
 				if floors.has(tilemap.get_cell(enemy_map_position.x, enemy_map_position.y + 1)):
+					enemy_map_position.y += 1
+				elif enemy.name.begins_with("Gargoyle") and gaps.has(tilemap.get_cell(enemy_map_position.x, enemy_map_position.y + 1)):
 					enemy_map_position.y += 1
 			if enemy_map_position.y > map_position.y:
 				if floors.has(tilemap.get_cell(enemy_map_position.x, enemy_map_position.y - 1)):
 					enemy_map_position.y -= 1
-			_tween.tween_property(enemy, "position", enemy_map_position * 16 + Vector2(8, 8), 0.25)
+				elif enemy.name.begins_with("Gargoyle") and gaps.has(tilemap.get_cell(enemy_map_position.x, enemy_map_position.y - 1)):
+					enemy_map_position.y -= 1
+			_tween.tween_property(enemy, "position", enemy_map_position * 16 + Vector2(8, 8), 0.4)
 			enemy.get_node("AnimatedSprite").play("walk")
 			if map_position == enemy_map_position:
 				hero.get_node("AnimatedSprite").play("die")
