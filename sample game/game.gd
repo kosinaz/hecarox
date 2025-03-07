@@ -12,6 +12,7 @@ var map_position = Vector2()
 var current_fov = []
 var time = 0
 var dead = false
+var save = null
 onready var hero = $Hero
 onready var boss = $War
 onready var arrow = $Arrow
@@ -26,9 +27,12 @@ func _ready():
 		wall_cells.append_array(tilemap.get_used_cells_by_id(i))
 	map_position = tilemap.world_to_map(hero.position)
 	draw_fov()
+	save = duplicate()
 
 func _process(_delta):
 	if dead:
+		if Input.is_action_just_released("ui_accept"):
+			get_tree().reload_current_scene()
 		return
 	if not _tween == null and  _tween.is_running():
 		return
@@ -51,6 +55,8 @@ func _process(_delta):
 			else:
 				tilemap.set_cell(map_position.x, map_position.y - 1, 11)
 			wall_cells.erase(Vector2(map_position.x, map_position.y - 1))
+		if map_position == Vector2(-3, -75):
+			get_tree().change_scene("res://win.tscn")
 		if map_position == Vector2(-12, -44):
 			if tilemap.get_cell(-12, -45) == 44:
 				tilemap.set_cell(-12, -45, 47)
@@ -221,20 +227,20 @@ func _process(_delta):
 				hero.get_node("AnimatedSprite").play("die")
 				hero.z_index = 0
 				dead = true
-	for arrow in get_tree().get_nodes_in_group("arrows"):
-		var arrow_map_position = tilemap.world_to_map(arrow.position)
+	for current_arrow in get_tree().get_nodes_in_group("arrows"):
+		var arrow_map_position = tilemap.world_to_map(current_arrow.position)
 		arrow_map_position.y += 1
-		_tween.tween_property(arrow, "position", arrow_map_position * 16 + Vector2(8, 8), 0.4)
-		arrow.get_node("AnimatedSprite").play("walk")
+		_tween.tween_property(current_arrow, "position", arrow_map_position * 16 + Vector2(8, 8), 0.4)
+		current_arrow.get_node("AnimatedSprite").play("walk")
 		if map_position == arrow_map_position or map_position == arrow_map_position + Vector2(0, -1):
 			hero.get_node("AnimatedSprite").play("die")
 			hero.z_index = 0
 			dead = true
-			arrow.visible = false
+			current_arrow.visible = false
 	draw_fov()
 
 func draw_fov():
-	current_fov = fov.calculate(map_position.x, map_position.y, 7, wall_cells)
+	current_fov = fov.calculate(map_position.x, map_position.y, 15, wall_cells)
 	tilemap2.clear()
 	for cell_map_position in current_fov:
 		var cell = tilemap.get_cell(cell_map_position.x, cell_map_position.y)

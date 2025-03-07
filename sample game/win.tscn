@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://dynamicfont.tres" type="DynamicFont" id=1]
+[ext_resource path="res://label.gd" type="Script" id=2]
+
+[node name="Win" type="Node2D"]
+
+[node name="Label" type="RichTextLabel" parent="."]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 312.0
+margin_bottom = 240.0
+custom_fonts/normal_font = ExtResource( 1 )
+bbcode_enabled = true
+bbcode_text = "the chamber shudders as wabadur sinks into the waters, revealing a dark passage. as you step forward, a cold, unsettling air surrounds you. at the end, a shimmering portal, pulling you in... you leap through.
+
+when you land, you find yourself in a barren, fog-shrouded world. the cracked earth beneath your feet feels lifeless, and a distant fortress looms in the mist.
+
+you have entered the realm of fehimence. the horrors ahead will be unlike anything you have faced before..."
+visible_characters = 0
+percent_visible = 0.0
+text = "the chamber shudders as wabadur sinks into the waters, revealing a dark passage. as you step forward, a cold, unsettling air surrounds you. at the end, a shimmering portal, pulling you in... you leap through.
+
+when you land, you find yourself in a barren, fog-shrouded world. the cracked earth beneath your feet feels lifeless, and a distant fortress looms in the mist.
+
+you have entered the realm of fehimence. the horrors ahead will be unlike anything you have faced before..."
+script = ExtResource( 2 )
+
+[node name="Timer" type="Timer" parent="Label"]
+wait_time = 0.05
+autostart = true
+
+[connection signal="timeout" from="Label/Timer" to="Label" method="_on_Timer_timeout"]
